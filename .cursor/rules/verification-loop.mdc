@@ -1,0 +1,14 @@
+---
+description: Require real verification after substantive changes
+alwaysApply: true
+---
+
+# Verification loop
+
+After non-trivial changes, run the relevant checks that exist:
+
+- Python: install, tests, import smoke, migrations
+- Web: typecheck / build
+- Infra: docker compose config / health when touched
+
+If a check fails, fix and rerun. Do not claim success without running checks. Prefer `scripts/verify.sh` when available.

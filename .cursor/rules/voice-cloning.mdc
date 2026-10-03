@@ -1,0 +1,23 @@
+---
+description: Original-speaker voice cloning is mandatory on every dub
+alwaysApply: true
+---
+
+# Voice cloning
+
+Cloning each original speaker is a core feature of this product. Keep it on every dub.
+
+- Synthesize with OmniVoice from a sample of the person who spoke that line in the source video. Pass their reference audio and clone prompt (`voice_clone_prompt` or `ref_audio`).
+- French accent (`fr-FR`, `fr-CA`, `fr-BE`, `fr-CH`) may change wording only. It must not select edge-tts, espeak-ng, or any other catalog voice.
+- Batching lines for speed is fine. Dropping the speaker reference is not.
+- If the original soundtrack or speaker sample is missing, fail the synthesize stage. Do not fall back to a generic voice.
+- Do not delete `services/api/app/providers/voice_clone.py`, and do not gate `_synthesize_cloned` behind an accent or a feature flag.
+
+```python
+# Bad: France speaks with a stock neural voice
+if accent != "fr-CA":
+    return self._synthesize_stock(...)
+
+# Good: every accent clones the original speaker
+return self._synthesize_cloned(script, voice_ref_key, ...)
+```

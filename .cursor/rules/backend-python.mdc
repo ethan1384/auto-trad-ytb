@@ -1,0 +1,14 @@
+---
+description: Python FastAPI and Celery backend conventions
+globs: services/**/*.py,packages/**/*.py
+alwaysApply: false
+---
+
+# Backend Python
+
+- FastAPI routes stay thin; business logic in services.
+- Use Pydantic schemas for API I/O; SQLAlchemy 2.0 models for persistence.
+- Type-hint public functions.
+- Celery tasks should be idempotent where practical and update `Job` / `JobStage` rows.
+- Provider-specific SDKs only inside `providers/` implementations.
+- Prefer env-driven `PROVIDER_MODE=mock|real`.

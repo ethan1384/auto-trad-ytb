@@ -1,0 +1,4 @@
+- [x]quand le texte original dit appeler ou nommme quelque chose il ne faut pas traduire l'élément qui va apres
+- [x]changement de personne qui parle prendre sa voix pour faire la transcription
+- [x]ca ne détecte pas bien les différents interlocuteur
+- [x]comprendre les expressions de la langue d'origine

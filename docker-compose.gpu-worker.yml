@@ -1,0 +1,45 @@
+# Celery worker for a Windows PC with an NVIDIA card (Docker Desktop, WSL2).
+# Only the worker runs here. Postgres, Redis, S3, Ollama, the API and the web
+# app stay on the Mac. MAC_HOST is the Mac's LAN or Tailscale address.
+#
+#   MAC_HOST=192.168.1.20 docker compose -f docker-compose.gpu-worker.yml up --build
+#
+# Stop every worker on the Mac first, or it will take jobs too.
+services:
+  worker-gpu:
+    build:
+      context: .
+      dockerfile: services/worker/Dockerfile.gpu
+    environment:
+      DATABASE_URL: postgresql+psycopg://dubbing:dubbing@${MAC_HOST:?set MAC_HOST to the Mac address}:5432/dubbing
+      REDIS_URL: redis://${MAC_HOST}:6379/0
+      S3_ENDPOINT_URL: http://${MAC_HOST}:4566
+      S3_PUBLIC_ENDPOINT_URL: http://localhost:4566
+      S3_ACCESS_KEY: test
+      S3_SECRET_KEY: test
+      S3_BUCKET: dubbing
+      S3_REGION: us-east-1
+      PROVIDER_MODE: local
+      WHISPER_MODEL: ${WHISPER_MODEL:-small}
+      WHISPER_DEVICE: cuda
+      # The spoken rewrite stays on the Mac's Ollama (Metal).
+      OLLAMA_BASE_URL: http://${MAC_HOST}:11434
+      REWRITE_MODEL: qwen3.8:27b
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+    volumes:
+      - ./services/api:/app/services/api
+      - ./packages/shared:/app/packages/shared
+      - ./services/worker:/app/services/worker
+      - hf_cache:/root/.cache
+      - argos_data:/root/.local/share/argos-translate
+
+volumes:
+  hf_cache:
+  argos_data:

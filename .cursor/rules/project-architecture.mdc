@@ -1,0 +1,15 @@
+---
+description: V1 architecture and monorepo boundaries for the dubbing platform
+alwaysApply: true
+---
+
+# Project architecture
+
+- Follow `AGENTS.md`, `docs/architecture.md`, and `docs/technologies-reference.md`.
+- Monorepo layout: `apps/web`, `services/api`, `services/worker`, `packages/shared`, `infra/dev`, `docs`, `scripts`.
+- Keep V1 modular but not microservice-heavy.
+- Pipeline stages live as retryable job stages in Postgres; Celery executes them.
+- AI providers (ASR, translation, rewrite, voice, lip sync) must sit behind interfaces; mocks are OK if they implement the same interface.
+- Do not introduce mouth redraw (MuseTalk, Wav2Lip), Kubernetes, or live dubbing in V1. Keep the original picture.
+- Voice cloning of each original speaker (OmniVoice) is mandatory. An accent never replaces it with a catalog voice. See `.cursor/rules/voice-cloning.mdc`.
+- Update `docs/progress-log.md` after meaningful blocks of work.

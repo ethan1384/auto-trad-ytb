@@ -1,0 +1,13 @@
+---
+description: Next.js dashboard conventions
+globs: apps/web/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Frontend Next.js
+
+- TypeScript strict; App Router.
+- Use TanStack Query for server state and job polling.
+- Keep UI minimal and functional for V1 (dashboard, project, job stages).
+- Call the FastAPI backend via a small API client; do not embed pipeline logic in the browser.
+- Prefer existing shadcn/Tailwind patterns once scaffolded; avoid new UI libraries.
